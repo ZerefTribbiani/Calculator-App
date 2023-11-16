@@ -31,189 +31,77 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static var displayText = '';
-
-  String getDisplayText() {
-    return displayText;
-  }
-
-  void updateDisplayText(String newText) {
-    setState(() {
-      displayText = newText;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var calcManager = CalculatorManager(size);
 
     return Scaffold(
       backgroundColor: const Color(0xFF17181A),
       body: Center(
-        child: SizedBox(
-          width: size.width * 0.82,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: size.height * 0.4,
-                alignment: Alignment.centerRight,
-                child: Text(
-                  displayText,
-                  style: TextStyle(
-                    color: const Color(0xFFFFFFFF),
-                    fontSize: size.height * 0.08,
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            calcManager.calculatorDisplay(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        calcManager.clearButton(),
+                        calcManager.backspaceButton(),
+                        calcManager.operatorButton(op: '÷'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        calcManager.digitButton(digit: '7'),
+                        calcManager.digitButton(digit: '8'),
+                        calcManager.digitButton(digit: '9'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        calcManager.digitButton(digit: '4'),
+                        calcManager.digitButton(digit: '5'),
+                        calcManager.digitButton(digit: '6'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        calcManager.digitButton(digit: '1'),
+                        calcManager.digitButton(digit: '2'),
+                        calcManager.digitButton(digit: '3'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        calcManager.digitButton(digit: '0', widthFactor: 0.46),
+                        calcManager.decimalPointButton(),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CalculatorButton.clear(
-                            size: size,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.backspace(
-                            size: size,
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.operator(
-                            size: size,
-                            op: '÷',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '7',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '8',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '9',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '4',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '5',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '6',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '1',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '2',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.digit(
-                            size: size,
-                            digit: '3',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CalculatorButton.digit(
-                            size: size,
-                            widthFactor: 0.4,
-                            digit: '0',
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                          CalculatorButton.decimalPoint(
-                            size: size,
-                            getDisplayText: getDisplayText,
-                            updateDisplayText: updateDisplayText,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CalculatorButton.operator(
-                        size: size,
-                        op: '×',
-                        getDisplayText: getDisplayText,
-                        updateDisplayText: updateDisplayText,
-                      ),
-                      CalculatorButton.operator(
-                        size: size,
-                        op: '-',
-                        getDisplayText: getDisplayText,
-                        updateDisplayText: updateDisplayText,
-                      ),
-                      CalculatorButton.operator(
-                        size: size,
-                        heightFactor: 0.15,
-                        op: '+',
-                        getDisplayText: getDisplayText,
-                        updateDisplayText: updateDisplayText,
-                      ),
-                      CalculatorButton.equalTo(
-                        size: size,
-                        precision: 2,
-                        getDisplayText: getDisplayText,
-                        updateDisplayText: updateDisplayText,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    calcManager.operatorButton(op: '×'),
+                    calcManager.operatorButton(op: '-'),
+                    calcManager.operatorButton(op: '+', heightFactor: 0.15),
+                    calcManager.equalToButton(),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
