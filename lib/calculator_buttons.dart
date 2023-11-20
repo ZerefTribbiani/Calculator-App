@@ -1,18 +1,30 @@
-import 'dart:math';
+import 'dart:math' show pow;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class CalculatorManager extends ChangeNotifier {
-  late String displayText;
   final Size size;
+  late String displayText;
 
   CalculatorManager(this.size) {
     displayText = '0';
   }
 
-  //String get displayText => displayText;
+  void calculate({int precision = 2}) {
+    var expText = displayText.replaceAll('×', '*').replaceAll('÷', '/');
+    Parser p = Parser();
+    Expression exp = p.parse(expText);
+    ContextModel cm = ContextModel();
+    num result = exp.evaluate(EvaluationType.REAL, cm);
+    num precisionFactor = pow(10, precision);
+    result = (result * precisionFactor).round() / precisionFactor;
+    displayText = result == result.toInt()
+        ? result.toInt().toString()
+        : result.toString();
+    notifyListeners();
+  }
 
   CalculatorDisplay calculatorDisplay({
     double heightFactor = 0.4,
@@ -48,8 +60,10 @@ class CalculatorManager extends ChangeNotifier {
       textColor: textColor,
       buttonText: digit,
       onPressed: () {
-        if (displayText == '0') {
-          displayText = '';
+        var terms = displayText.split(RegExp(r'\+|-|×|÷'));
+        String lastTerm = terms[terms.length - 1];
+        if (lastTerm == '0') {
+          displayText = displayText.substring(0, displayText.length - 1);
         }
         displayText += digit;
         notifyListeners();
@@ -73,8 +87,11 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: '.',
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        if (!CalculatorButton.operators
-            .contains(displayText[displayText.length - 1])) {
+        if (displayText[displayText.length - 1] != '.') {
+          if (CalculatorButton.operators
+              .contains(displayText[displayText.length - 1])) {
+            displayText += '0';
+          }
           displayText += '.';
         }
         notifyListeners();
@@ -99,10 +116,11 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: op,
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        if (!CalculatorButton.operators
+        if (CalculatorButton.operators
             .contains(displayText[displayText.length - 1])) {
-          displayText += op;
+          displayText = displayText.substring(0, displayText.length - 1);
         }
+        displayText += op;
         notifyListeners();
       },
     );
@@ -239,7 +257,7 @@ class CalculatorDisplay extends StatelessWidget {
 }
 
 class CalculatorButton extends StatelessWidget {
-  static var operators = ['+', '-', '×', '÷', '.'];
+  static var operators = ['+', '-', '×', '÷'];
 
   final Size size;
   final double heightFactor;

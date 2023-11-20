@@ -4,3 +4,4 @@ A simple calculator app made with Flutter
 
 ## Packages used:
 - [math_expressions](https://pub.dev/packages/math_expressions)
+- [provider] (https://pub.dev/packages/provider)
