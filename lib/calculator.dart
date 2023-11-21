@@ -5,24 +5,19 @@ import 'package:provider/provider.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class CalculatorManager extends ChangeNotifier {
+  static var operators = ['+', '-', '×', '÷'];
+
   final Size size;
-  late String displayText;
+  late String _displayText;
 
   CalculatorManager(this.size) {
-    displayText = '0';
+    _displayText = '0';
   }
 
-  void calculate({int precision = 2}) {
-    var expText = displayText.replaceAll('×', '*').replaceAll('÷', '/');
-    Parser p = Parser();
-    Expression exp = p.parse(expText);
-    ContextModel cm = ContextModel();
-    num result = exp.evaluate(EvaluationType.REAL, cm);
-    num precisionFactor = pow(10, precision);
-    result = (result * precisionFactor).round() / precisionFactor;
-    displayText = result == result.toInt()
-        ? result.toInt().toString()
-        : result.toString();
+  String get displayText => _displayText;
+
+  void updateDisplayText(String newText) {
+    _displayText = newText;
     notifyListeners();
   }
 
@@ -44,6 +39,28 @@ class CalculatorManager extends ChangeNotifier {
     );
   }
 
+  /// Use calculatorManager.displayText and calculatorManager.updateDisplayText(newText)
+  /// inside onPressed to get and update the value of the text on the calculator display
+  CalculatorButton customButton({
+    double heightFactor = 0.1,
+    double widthFactor = 0.23,
+    Color backgroundColor = const Color(0xFF303136),
+    Color textColor = const Color(0xFF29A8FF),
+    double textSizeFactor = 0.04,
+    required String buttonText,
+    required void Function() onPressed,
+  }) {
+    return CalculatorButton(
+      size: size,
+      heightFactor: heightFactor,
+      widthFactor: widthFactor,
+      backgroundColor: backgroundColor,
+      textColor: textColor,
+      buttonText: buttonText,
+      onPressed: onPressed,
+    );
+  }
+
   CalculatorButton digitButton({
     double heightFactor = 0.1,
     double widthFactor = 0.23,
@@ -60,13 +77,14 @@ class CalculatorManager extends ChangeNotifier {
       textColor: textColor,
       buttonText: digit,
       onPressed: () {
-        var terms = displayText.split(RegExp(r'\+|-|×|÷'));
+        String newText = displayText;
+        var terms = newText.split(RegExp(r'\+|-|×|÷'));
         String lastTerm = terms[terms.length - 1];
         if (lastTerm == '0') {
-          displayText = displayText.substring(0, displayText.length - 1);
+          newText = newText.substring(0, newText.length - 1);
         }
-        displayText += digit;
-        notifyListeners();
+        newText += digit;
+        updateDisplayText(newText);
       },
     );
   }
@@ -87,14 +105,14 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: '.',
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        if (displayText[displayText.length - 1] != '.') {
-          if (CalculatorButton.operators
-              .contains(displayText[displayText.length - 1])) {
-            displayText += '0';
+        String newText = displayText;
+        if (newText[newText.length - 1] != '.') {
+          if (operators.contains(newText[newText.length - 1])) {
+            newText += '0';
           }
-          displayText += '.';
+          newText += '.';
         }
-        notifyListeners();
+        updateDisplayText(newText);
       },
     );
   }
@@ -116,12 +134,12 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: op,
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        if (CalculatorButton.operators
-            .contains(displayText[displayText.length - 1])) {
-          displayText = displayText.substring(0, displayText.length - 1);
+        String newText = displayText;
+        if (operators.contains(newText[newText.length - 1])) {
+          newText = newText.substring(0, newText.length - 1);
         }
-        displayText += op;
-        notifyListeners();
+        newText += op;
+        updateDisplayText(newText);
       },
     );
   }
@@ -143,17 +161,18 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: '=',
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        var expText = displayText.replaceAll('×', '*').replaceAll('÷', '/');
+        String newText = displayText;
+        var expText = newText.replaceAll('×', '*').replaceAll('÷', '/');
         Parser p = Parser();
         Expression exp = p.parse(expText);
         ContextModel cm = ContextModel();
         num result = exp.evaluate(EvaluationType.REAL, cm);
         num precisionFactor = pow(10, precision);
         result = (result * precisionFactor).round() / precisionFactor;
-        displayText = result == result.toInt()
+        newText = result == result.toInt()
             ? result.toInt().toString()
             : result.toString();
-        notifyListeners();
+        updateDisplayText(newText);
       },
     );
   }
@@ -174,8 +193,7 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: 'Ac',
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        displayText = '0';
-        notifyListeners();
+        updateDisplayText('0');
       },
     );
   }
@@ -196,13 +214,14 @@ class CalculatorManager extends ChangeNotifier {
       buttonText: '⌫',
       textSizeFactor: textSizeFactor,
       onPressed: () {
-        if (displayText.isNotEmpty) {
-          displayText = displayText.substring(0, displayText.length - 1);
+        String newText = displayText;
+        if (newText.isNotEmpty) {
+          newText = newText.substring(0, newText.length - 1);
         }
-        if (displayText.isEmpty) {
-          displayText = '0';
+        if (newText.isEmpty) {
+          newText = '0';
         }
-        notifyListeners();
+        updateDisplayText(newText);
       },
     );
   }
@@ -257,8 +276,6 @@ class CalculatorDisplay extends StatelessWidget {
 }
 
 class CalculatorButton extends StatelessWidget {
-  static var operators = ['+', '-', '×', '÷'];
-
   final Size size;
   final double heightFactor;
   final double widthFactor;

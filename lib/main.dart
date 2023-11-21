@@ -1,4 +1,4 @@
-import 'package:calculator/calculator_buttons.dart';
+import 'package:calculator/calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 
