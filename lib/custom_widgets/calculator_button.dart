@@ -1,6 +1,8 @@
-import 'package:calculator/calculator_state.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+
+import '../calculator_state.dart';
 
 enum ButtonColorType { primary, secondary, altSecondary, tertiary }
 
@@ -145,7 +147,7 @@ class CalculatorButton extends StatelessWidget {
         color: backgroundColor,
         child: TextButton(
           onPressed: () {
-            calculatorState.addInput(buttonText);
+            calculatorState.addInput(context, buttonText);
           },
           child: Text(
             buttonText,

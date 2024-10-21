@@ -15,6 +15,9 @@ ThemeData lightTheme = ThemeData(
     tertiaryContainer: const Color(0xFFFFFFFF),
     onTertiaryContainer: const Color(0xFF858585),
   ),
+  iconTheme: const IconThemeData(
+    color: Color(0xFF858585),
+  ),
 );
 
 ThemeData darkTheme = ThemeData(
@@ -32,5 +35,8 @@ ThemeData darkTheme = ThemeData(
     onSecondary: const Color(0xFFB2DAFF), // onAltSecondaryContainer
     tertiaryContainer: const Color(0xFF616161),
     onTertiaryContainer: const Color(0xFFA5A5A5),
+  ),
+  iconTheme: const IconThemeData(
+    color: Color(0xFFA5A5A5),
   ),
 );

@@ -3,16 +3,19 @@ import 'dart:math' show pow;
 import 'package:flutter/material.dart';
 
 import 'package:math_expressions/math_expressions.dart';
+import 'package:provider/provider.dart';
+
+import 'settings/settings_controller.dart';
 
 class CalculatorState extends ChangeNotifier {
   static final operators = ['+', '-', '×', '÷'];
 
-  int precision = 5;
   String _displayText = '0';
-
   String get displayText => _displayText;
 
-  void addInput(String input) {
+  void addInput(BuildContext context, String input) {
+    final precision = context.read<SettingsController>().precisionNotifier.value;
+
     switch (input) {
       case '0':
       case '1':
@@ -34,7 +37,9 @@ class CalculatorState extends ChangeNotifier {
         _displayText = newText;
       case '.':
         String newText = displayText;
-        if (newText[newText.length - 1] != '.') {
+        var terms = newText.split(RegExp(r'\+|-|×|÷'));
+        String lastTerm = terms[terms.length - 1];
+        if (!lastTerm.contains('.')) {
           if (operators.contains(newText[newText.length - 1])) {
             newText += '0';
           }

@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'buttons.dart';
-import 'display.dart';
+import 'custom_widgets/calculator_button.dart';
+import 'custom_widgets/calculator_display.dart';
+import 'custom_widgets/settings_button.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key, required this.title});
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
 
-  final String title;
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -24,7 +18,12 @@ class _MainScreenState extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CalculatorDisplay(),
+            Stack(
+              children: [
+                SettingsButton(),
+                CalculatorDisplay(),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -65,7 +64,8 @@ class _MainScreenState extends State<MainScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        CalculatorButton.digitButton(digit: '0', widthFactor: 0.46),
+                        CalculatorButton.digitButton(
+                            digit: '0', widthFactor: 0.46),
                         CalculatorButton.decimalPointButton(),
                       ],
                     ),
@@ -76,7 +76,8 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     CalculatorButton.operatorButton(op: '×'),
                     CalculatorButton.operatorButton(op: '-'),
-                    CalculatorButton.operatorButton(op: '+', heightFactor: 0.15),
+                    CalculatorButton.operatorButton(
+                        op: '+', heightFactor: 0.15),
                     CalculatorButton.equalToButton(),
                   ],
                 ),

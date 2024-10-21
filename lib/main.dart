@@ -1,8 +1,10 @@
-import 'package:calculator/calculator_state.dart';
+import 'package:calculator/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+
 import 'package:provider/provider.dart';
 
+import 'calculator_state.dart';
 import 'main_screen.dart';
 import 'themes.dart';
 
@@ -20,15 +22,28 @@ class CalculatorApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    return ChangeNotifierProvider(
-      create: (context) => CalculatorState(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Calculator',
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        themeMode: ThemeMode.dark,
-        home: const MainScreen(title: 'Calculator'),
+    return MultiProvider(
+      providers: [
+        Provider(create: (context) => SettingsController()),
+        ChangeNotifierProvider(create: (context) => CalculatorState()),
+      ],
+      child: Builder(
+        builder: (context) {
+          return ValueListenableBuilder(
+            valueListenable:
+                context.watch<SettingsController>().themeModeNotifier,
+            builder: (context, themeMode, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Calculator',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: themeMode,
+                home: const MainScreen(),
+              );
+            },
+          );
+        },
       ),
     );
   }
